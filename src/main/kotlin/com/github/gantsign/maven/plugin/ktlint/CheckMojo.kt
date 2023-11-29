@@ -27,6 +27,7 @@ package com.github.gantsign.maven.plugin.ktlint
 
 import com.github.gantsign.maven.plugin.ktlint.internal.Check
 import com.github.gantsign.maven.plugin.ktlint.internal.Sources
+import com.github.gantsign.maven.plugin.ktlint.internal.getEditorConfigFile
 import com.pinterest.ktlint.cli.reporter.plain.Color
 import org.apache.maven.plugins.annotations.LifecyclePhase
 import org.apache.maven.plugins.annotations.Mojo
@@ -114,6 +115,9 @@ class CheckMojo : AbstractBaseMojo() {
             reporterColorName = reporterColorName,
             enableExperimentalRules = experimental,
             failOnViolation = failOnViolation,
+            editorConfigFile = editorConfigLocation?.let {
+                getEditorConfigFile(it, buildDirectory, log)
+            },
         )()
     }
 }

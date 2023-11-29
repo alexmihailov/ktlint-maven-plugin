@@ -50,7 +50,8 @@ internal class Format(
     private val sources: List<Sources>,
     android: Boolean,
     enableExperimentalRules: Boolean,
-) : AbstractLintSupport(log, basedir, android, enableExperimentalRules) {
+    editorConfigFile: File?,
+) : AbstractLintSupport(log, basedir, android, enableExperimentalRules, editorConfigFile) {
 
     private val formattedFileCount = AtomicInteger()
 
@@ -66,7 +67,7 @@ internal class Format(
                     plus(CODE_STYLE_PROPERTY to CodeStyleValue.android_studio)
                 }
 
-        val editorConfigDefaults = EditorConfigDefaults.load(null, ruleProviders.propertyTypes())
+        val editorConfigDefaults = EditorConfigDefaults.load(editorConfigFile?.toPath(), ruleProviders.propertyTypes())
 
         val ktLintRuleEngine =
             KtLintRuleEngine(

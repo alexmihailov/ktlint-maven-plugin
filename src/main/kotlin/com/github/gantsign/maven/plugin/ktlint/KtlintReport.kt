@@ -29,7 +29,9 @@ import com.github.gantsign.maven.plugin.ktlint.internal.KtlintReportGenerator
 import com.github.gantsign.maven.plugin.ktlint.internal.Report
 import com.github.gantsign.maven.plugin.ktlint.internal.Sources
 import com.github.gantsign.maven.plugin.ktlint.internal.get
+import com.github.gantsign.maven.plugin.ktlint.internal.getEditorConfigFile
 import java.io.File
+import java.net.URL
 import java.util.Locale
 import java.util.ResourceBundle
 import org.apache.maven.plugins.annotations.LifecyclePhase
@@ -64,10 +66,20 @@ class KtlintReport : AbstractMavenReport() {
     )
     private lateinit var testSourceRoots: List<String>
 
+    @Parameter(
+        defaultValue = "\${project.build.directory}",
+        required = true,
+        readonly = true,
+    )
+    private lateinit var buildDirectory: File
+
     /**
      * A list of root directories containing Kotlin scripts.
      */
-    @Parameter(property = "ktlint.scriptRoots", defaultValue = "\${project.basedir.path}")
+    @Parameter(
+        property = "ktlint.scriptRoots",
+        defaultValue = "\${project.basedir.path}",
+    )
     private lateinit var scriptRoots: List<String>
 
     /**
@@ -160,6 +172,12 @@ class KtlintReport : AbstractMavenReport() {
     @Parameter(property = "ktlint.skip", defaultValue = "false", required = true)
     private var skip: Boolean = false
 
+    /**
+     * Specifies the URL of the editorconfig file.
+     */
+    @Parameter(property = "ktlint.editorconfigLocation")
+    private var editorConfigLocation: URL? = null
+
     private fun getBundle(locale: Locale): ResourceBundle {
         return ResourceBundle.getBundle(
             "ktlint-report",
@@ -208,6 +226,9 @@ class KtlintReport : AbstractMavenReport() {
             reporterConfig = reporters ?: emptySet(),
             verbose = verbose,
             enableExperimentalRules = experimental,
+            editorConfigFile = editorConfigLocation?.let {
+                getEditorConfigFile(it, buildDirectory, log)
+            },
         )()
         KtlintReportGenerator(sink, getBundle(locale)).generatorReport(results)
     }

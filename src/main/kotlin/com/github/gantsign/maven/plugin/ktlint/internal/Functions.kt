@@ -31,8 +31,12 @@ import com.pinterest.ktlint.cli.reporter.core.api.KtlintCliError
 import com.pinterest.ktlint.rule.engine.api.Code
 import com.pinterest.ktlint.rule.engine.api.KtLintParseException
 import com.pinterest.ktlint.rule.engine.api.KtLintRuleException
+import java.io.File
+import java.net.URL
 import java.util.Locale
 import java.util.ResourceBundle
+import org.apache.commons.io.FileUtils
+import org.apache.maven.plugin.logging.Log
 
 internal operator fun ResourceBundle.get(key: String): String =
     if (containsKey(key)) getString(key) else key
@@ -66,3 +70,18 @@ internal fun Exception.toKtlintCliError(code: Code): KtlintCliError =
             else -> throw e
         }
     }
+
+internal fun getEditorConfigFile(editorConfigLocation: URL, outputDirectory: File, log: Log): File {
+    val editorConfigFile = if (editorConfigLocation.protocol == "file") {
+        File(editorConfigLocation.path)
+    } else {
+        val file = File(outputDirectory, ".editorconfig")
+        if (!file.exists()) {
+            log.info("Downloading editorconfig file from $editorConfigLocation")
+            FileUtils.copyURLToFile(editorConfigLocation, file, 15000, 30000)
+        }
+        file
+    }
+    log.info("Use editorconfig file $editorConfigFile")
+    return editorConfigFile
+}

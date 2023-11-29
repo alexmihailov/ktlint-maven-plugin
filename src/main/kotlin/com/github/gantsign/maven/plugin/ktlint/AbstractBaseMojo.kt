@@ -26,6 +26,7 @@
 package com.github.gantsign.maven.plugin.ktlint
 
 import java.io.File
+import java.net.URL
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.Parameter
 
@@ -40,11 +41,10 @@ abstract class AbstractBaseMojo : AbstractMojo() {
     @Parameter(defaultValue = "\${project.compileSourceRoots}", readonly = true, required = true)
     protected lateinit var sourceRoots: List<String>
 
-    @Parameter(
-        defaultValue = "\${project.testCompileSourceRoots}",
-        readonly = true,
-        required = true,
-    )
+    @Parameter(defaultValue = "\${project.build.directory}", required = true, readonly = true)
+    protected lateinit var buildDirectory: File
+
+    @Parameter(defaultValue = "\${project.testCompileSourceRoots}", readonly = true, required = true)
     protected lateinit var testSourceRoots: List<String>
 
     /**
@@ -118,4 +118,10 @@ abstract class AbstractBaseMojo : AbstractMojo() {
      */
     @Parameter(property = "ktlint.experimental", defaultValue = "false", required = true)
     protected var experimental: Boolean = false
+
+    /**
+     * Specifies the URL of the editorconfig file.
+     */
+    @Parameter(property = "ktlint.editorconfigLocation")
+    protected var editorConfigLocation: URL? = null
 }

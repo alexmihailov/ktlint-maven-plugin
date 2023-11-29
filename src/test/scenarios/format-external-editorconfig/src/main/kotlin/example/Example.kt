@@ -23,42 +23,9 @@
  * THE SOFTWARE.
  * #L%
  */
-package com.github.gantsign.maven.plugin.ktlint.internal
+package example
 
-import com.github.gantsign.maven.plugin.ktlint.ReporterConfig
-import com.pinterest.ktlint.cli.reporter.plain.Color
-import java.io.File
-import org.apache.maven.plugin.logging.Log
-
-internal class Report(
-    log: Log,
-    basedir: File,
-    modulePackaging: String,
-    sources: List<Sources>,
-    android: Boolean,
-    reporterConfig: Set<ReporterConfig>,
-    verbose: Boolean,
-    enableExperimentalRules: Boolean,
-    editorConfigFile: File?,
-) : AbstractCheckSupport(
-    log,
-    basedir,
-    modulePackaging,
-    sources,
-    android,
-    reporterConfig,
-    verbose,
-    false,
-    Color.DARK_GRAY.name,
-    enableExperimentalRules,
-    editorConfigFile,
-) {
-    operator fun invoke(): CheckResults {
-        val modelReporter = ModelReporter()
-        val reporter = AggregatedReporter(listOf(reporter, modelReporter))
-
-        hasErrors(reporter)
-
-        return CheckResults(modelReporter.fileCount, modelReporter.errors)
-    }
+fun example() {
+    println("this line is too long" + "............................................................")
+    println("should remove semicolon");
 }

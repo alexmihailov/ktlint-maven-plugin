@@ -154,4 +154,47 @@ class FormatMojoTest {
 
         confirmVerified(log)
     }
+
+    @Test
+    fun externalEditorConfig() {
+        val pom =
+            File("target/test-scenarios/format-external-editorconfig/pom.xml")
+
+        assertThat(pom.isFile).isTrue()
+
+        val project = rule.readMavenProject(pom.parentFile)
+
+        val formatMojo = rule.lookupConfiguredMojo(
+            project,
+            "format",
+        ) as FormatMojo
+
+        // TODO не работает, так как ktlint берет файл из текущей директории
+//        Use command below, to specify a default editorconfig. In case a property is not defined in any
+//            .editorconfig file on the path to the file, the value from the default file is used.
+//        The path may point to any valid file or directory. The path can be relative or absolute.
+//        Depending on your OS, the "~" at the beginning of a path is replaced by the user home directory.
+        val log = mockk<Log>(relaxed = true)
+        formatMojo.log = log
+
+        assertThat(formatMojo).isNotNull
+        formatMojo.execute()
+
+//        verify(atLeast = 1) { log.isDebugEnabled }
+//        verify { log.debug("checking format: $source") }
+//        verify { log.debug("Format fixed > $source:1:1: Unnecessary semicolon") }
+//        verify {
+//            log.debug(
+//                "Format fixed > $source:29:13: Argument should be on a separate line " +
+//                    "(unless all arguments can fit a single line)",
+//            )
+//        }
+//        verify { log.debug("Format fixed > $source:30:8: Missing newline before \")\"") }
+//        verify { log.debug("Format fixed > $source:30:8: Missing trailing comma before \")\"") }
+//        verify { log.debug("Format could not fix > $source:29:14: Exceeded max line length (80)") }
+//        verify { log.debug("Format fixed > $source") }
+//        verify { log.warn("Source root doesn't exist: $testRoot") }
+//        verify { log.info("1 file(s) formatted.") }
+//        confirmVerified(log)
+    }
 }

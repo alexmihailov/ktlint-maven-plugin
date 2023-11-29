@@ -64,7 +64,8 @@ internal abstract class AbstractCheckSupport(
     private var reporterColor: Boolean,
     private var reporterColorName: String,
     enableExperimentalRules: Boolean,
-) : AbstractLintSupport(log, basedir, android, enableExperimentalRules) {
+    editorConfigFile: File?,
+) : AbstractLintSupport(log, basedir, android, enableExperimentalRules, editorConfigFile) {
 
     private val adviseToUseFormat = AtomicBoolean()
 
@@ -163,7 +164,7 @@ internal abstract class AbstractCheckSupport(
                     plus(CODE_STYLE_PROPERTY to CodeStyleValue.android_studio)
                 }
 
-        val editorConfigDefaults = EditorConfigDefaults.load(null, ruleProviders.propertyTypes())
+        val editorConfigDefaults = EditorConfigDefaults.load(editorConfigFile?.toPath(), ruleProviders.propertyTypes())
 
         val ktLintRuleEngine =
             KtLintRuleEngine(

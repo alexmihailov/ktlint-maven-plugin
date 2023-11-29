@@ -27,6 +27,7 @@ package com.github.gantsign.maven.plugin.ktlint
 
 import com.github.gantsign.maven.plugin.ktlint.internal.Format
 import com.github.gantsign.maven.plugin.ktlint.internal.Sources
+import com.github.gantsign.maven.plugin.ktlint.internal.getEditorConfigFile
 import org.apache.maven.plugins.annotations.LifecyclePhase
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
@@ -78,6 +79,9 @@ class FormatMojo : AbstractBaseMojo() {
             ),
             android = android,
             enableExperimentalRules = experimental,
+            editorConfigFile = editorConfigLocation?.let {
+                getEditorConfigFile(it, buildDirectory, log)
+            },
         )()
     }
 }
